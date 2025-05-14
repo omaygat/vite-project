@@ -1,4 +1,26 @@
-# Ignorar solo el archivo de credenciales
-# Ignorar solo el archivo de credenciales
-src/vite-project-2607.json
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
 
+# Archivos de configuración de despliegue
+render.yaml
+src/*.json  # credenciales sensibles
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vite
+dist/
+.vite/
+
+# Editor
+.vscode/
+.idea/
+
+# MacOS / Linux
+.DS_Store
+Thumbs.db
