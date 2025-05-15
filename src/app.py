@@ -21,6 +21,10 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
+@app.route('/')
+def home():
+    return 'API de predicción activa. Usa /prediccion para obtener resultados.'
+
 @app.route('/prediccion', methods=['GET'])
 def predecir_ventas():
     # Recuperar datos de Firestore
@@ -63,7 +67,7 @@ def predecir_ventas():
         'fecha_prediccion': datetime.now().strftime('%Y-%m-%d')
     })
 
-# Especificar puerto para Render
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  # Render detecta este puerto
+    port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+
