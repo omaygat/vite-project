@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS  # 👈 agregar esta línea
 import os
 import json
 import firebase_admin
@@ -9,6 +10,9 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)  # 👈 permitir peticiones desde cualquier origen
+
+# Inicializar Firebase...
 
 # Inicializar Firebase
 if not firebase_admin._apps:
