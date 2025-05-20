@@ -57,6 +57,7 @@ const Ventas = () => {
   };
 
   const ventasFiltradas = ventas.filter(venta => {
+    const producto = venta.producto || ""; // Si es undefined, lo reemplaza con cadena vacía
     const nombreCoincide = venta.producto.toLowerCase().includes(filtro.toLowerCase());
     const fechaVenta = venta.fecha?.toDate();
     const desde = fechaDesde ? new Date(fechaDesde) : null;
