@@ -56,15 +56,16 @@ const Ventas = () => {
     setEditandoId(null);
   };
 
-  const ventasFiltradas = ventas.filter(venta => {
-    const producto = venta.producto || ""; // Si es undefined, lo reemplaza con cadena vacía
-    const nombreCoincide = venta.producto.toLowerCase().includes(filtro.toLowerCase());
-    const fechaVenta = venta.fecha?.toDate();
-    const desde = fechaDesde ? new Date(fechaDesde) : null;
-    const hasta = fechaHasta ? new Date(fechaHasta) : null;
-    const fechaCoincide = (!desde || fechaVenta >= desde) && (!hasta || fechaVenta <= hasta);
-    return nombreCoincide && fechaCoincide;
-  });
+ const ventasFiltradas = ventas.filter(venta => {
+  const producto = venta.producto || ""; // Si es undefined, lo reemplaza con cadena vacía
+  const nombreCoincide = producto.toLowerCase().includes(filtro.toLowerCase());
+  const fechaVenta = venta.fecha?.toDate();
+  const desde = fechaDesde ? new Date(fechaDesde) : null;
+  const hasta = fechaHasta ? new Date(fechaHasta) : null;
+  const fechaCoincide = (!desde || fechaVenta >= desde) && (!hasta || fechaVenta <= hasta);
+  return nombreCoincide && fechaCoincide;
+});
+
 
   const exportarExcel = () => {
     const datosExportar = ventasFiltradas.map(venta => ({
