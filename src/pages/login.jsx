@@ -1,47 +1,34 @@
-// src/Login.jsx
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import "../login.css";  // Importa el archivo CSS aquí
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Inicio de sesión exitoso");
-      navigate("/dashboard");
+      navigate("/ventas"); // Redirige a ventas
     } catch (error) {
-      if (error.code === "auth/user-not-found") {
-        setError("Usuario no encontrado. ¿Quieres registrarte?");
-      } else {
-        setError(error.message);
-      }
+      alert(error.message);
     }
   };
 
-  const goToRegister = () => {
-    navigate("/register");
-  };
-
   return (
-    <div className="login-container">
+    <div>
       <h2>Iniciar sesión</h2>
-      <form onSubmit={handleLogin} className="login-form">
+      <form onSubmit={handleLogin}>
         <input
           type="email"
           placeholder="Correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="input-field"
         />
         <input
           type="password"
@@ -49,25 +36,12 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="input-field"
         />
-        <button type="submit" className="btn btn-primary">
-          Iniciar sesión
-        </button>
+        <button type="submit">Iniciar sesión</button>
       </form>
-
-      {error && (
-        <div className="error-message">
-          <p>{error}</p>
-          {error.includes("registrarte") && (
-            <button onClick={goToRegister} className="btn btn-link">
-              Ir a Registrarse
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 }
 
 export default Login;
+

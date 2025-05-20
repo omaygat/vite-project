@@ -1,37 +1,35 @@
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom"; // ESTO ESTÁ BIEN
-import { db } from "../firebase"; // importa Firestore
-import { doc, setDoc } from "firebase/firestore"; // importa funciones para guardar
+import { useNavigate } from "react-router-dom";
+import { db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // 👈 AQUÍ está corregido
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     const auth = getAuth();
 
     try {
-      // Crear el usuario en Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Guardar información adicional en Firestore
+      // Guardar info en Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         uid: user.uid,
-        createdAt: new Date()
+        createdAt: new Date(),
       });
 
-      alert("Registro exitoso!");
-
-      navigate("/login"); // 👈 AQUÍ está corregido
+      // Auto-login ya hecho al crear el usuario, solo redirigimos:
+      navigate("/ventas");
     } catch (err) {
       console.error("Error registrando usuario:", err);
-      setError(err.message); // Mostrar el error si algo sale mal
+      setError(err.message);
     }
   };
 
