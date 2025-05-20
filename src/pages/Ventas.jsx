@@ -133,51 +133,51 @@ const Ventas = () => {
               <th>Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {ventasFiltradas.map((venta) => (
-              <React.Fragment key={venta.id}>
-                <tr>
-                  <td>{venta.producto}</td>
-                  <td>{venta.cantidad}</td>
-                  <td>{venta.precio}</td>
-                  <td>{venta.total}</td>
-                  <td>{venta.fecha?.toDate().toLocaleString()}</td>
-                  <td>
-                    <button onClick={() => iniciarEdicion(venta)}>✏️</button>
-                    <button onClick={() => eliminarVenta(venta.id)}>🗑</button>
-                  </td>
-                </tr>
-                {editandoId === venta.id && (
-                  <tr>
-                    <td colSpan="6">
-                      <form onSubmit={(e) => { e.preventDefault(); guardarCambios(); }}>
-                        <input
-                          type="text"
-                          value={editData.producto}
-                          onChange={(e) => setEditData({ ...editData, producto: e.target.value })}
-                          required
-                        />
-                        <input
-                          type="number"
-                          value={editData.cantidad}
-                          onChange={(e) => setEditData({ ...editData, cantidad: e.target.value })}
-                          required
-                        />
-                        <input
-                          type="number"
-                          value={editData.precio}
-                          onChange={(e) => setEditData({ ...editData, precio: e.target.value })}
-                          required
-                        />
-                        <button type="submit">Guardar</button>
-                        <button type="button" onClick={() => setEditandoId(null)}>Cancelar</button>
-                      </form>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
+         <tbody>
+  {ventasFiltradas.map((venta) => (
+    <React.Fragment key={venta.id}>
+      <tr>
+        <td>{venta.producto ?? ''}</td>
+        <td>{venta.cantidad ?? 0}</td>
+        <td>{venta.precio ?? 0}</td>
+        <td>{venta.total ?? 0}</td>
+        <td>{venta.fecha?.toDate().toLocaleString() ?? ''}</td>
+        <td>
+          <button onClick={() => iniciarEdicion(venta)}>✏️</button>
+          <button onClick={() => eliminarVenta(venta.id)}>🗑</button>
+        </td>
+      </tr>
+      {editandoId === venta.id && (
+        <tr>
+          <td colSpan="6">
+            <form onSubmit={(e) => { e.preventDefault(); guardarCambios(); }}>
+              <input
+                type="text"
+                value={editData.producto}
+                onChange={(e) => setEditData({ ...editData, producto: e.target.value })}
+                required
+              />
+              <input
+                type="number"
+                value={editData.cantidad}
+                onChange={(e) => setEditData({ ...editData, cantidad: e.target.value })}
+                required
+              />
+              <input
+                type="number"
+                value={editData.precio}
+                onChange={(e) => setEditData({ ...editData, precio: e.target.value })}
+                required
+              />
+              <button type="submit">Guardar</button>
+              <button type="button" onClick={() => setEditandoId(null)}>Cancelar</button>
+            </form>
+          </td>
+        </tr>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
         </table>
       )}
 
