@@ -27,8 +27,9 @@ const Prediction = () => {
             {prediccion.prediccion_ventas !== undefined ? ` S/ ${prediccion.prediccion_ventas.toFixed(2)}` : ' No disponible'}
           </p>
           <p><strong>Cantidad estimada de unidades a vender:</strong> 
-            {prediccion.cantidad_estimada !== undefined ? ` ${Math.round(prediccion.cantidad_estimada)}` : ' No disponible'}
-          </p>
+  {prediccion.prediccion_cantidad !== undefined ? ` ${Math.round(prediccion.prediccion_cantidad)}` : ' No disponible'}
+</p>
+
         </div>
       ) : (
         <p>⏳ Cargando predicción...</p>
