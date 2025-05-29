@@ -19,6 +19,7 @@ function NavBar() {
           <Link to="/ventas" style={{ marginRight: "15px" }}>Ventas</Link>
           <Link to="/registrar-venta" style={{ marginRight: "15px" }}>Registrar Venta</Link>
           <Link to="/prediccion" style={{ marginRight: "15px" }}>Predicción de Ventas</Link>
+          <Link to="/prediccion" style={{ marginRight: "15px" }}>Predicción de Ventas</Link>
         </>
       ) : (
         <>
