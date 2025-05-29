@@ -1,7 +1,7 @@
 // src/pages/Ventas.jsx
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -15,19 +15,19 @@ const Ventas = () => {
   const [editData, setEditData] = useState({ producto: '', cantidad: '', precio: '' });
 
   useEffect(() => {
-    const fetchVentas = async () => {
-      const q = collection(db, 'ventas');
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const ventasData = querySnapshot.docs.map(doc => ({
+    const q = collection(db, 'ventas');
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const ventasData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
           id: doc.id,
-          ...doc.data()
-        }));
-        setVentas(ventasData);
+          ...data,
+          fecha: data.fecha?.toDate?.() || null  // ← Asegura que sea Date
+        };
       });
-      return () => unsubscribe();
-    };
-
-    fetchVentas();
+      setVentas(ventasData);
+    });
+    return () => unsubscribe();
   }, []);
 
   const eliminarVenta = async (id) => {
@@ -56,16 +56,19 @@ const Ventas = () => {
     setEditandoId(null);
   };
 
- const ventasFiltradas = ventas.filter(venta => {
-  const producto = venta.producto || ""; // Si es undefined, lo reemplaza con cadena vacía
-  const nombreCoincide = producto.toLowerCase().includes(filtro.toLowerCase());
-  const fechaVenta = venta.fecha?.toDate();
-  const desde = fechaDesde ? new Date(fechaDesde) : null;
-  const hasta = fechaHasta ? new Date(fechaHasta) : null;
-  const fechaCoincide = (!desde || fechaVenta >= desde) && (!hasta || fechaVenta <= hasta);
-  return nombreCoincide && fechaCoincide;
-});
+  const ventasFiltradas = ventas.filter(venta => {
+    const producto = venta.producto || "";
+    const nombreCoincide = producto.toLowerCase().includes(filtro.toLowerCase());
 
+    const fechaVenta = venta.fecha instanceof Date ? venta.fecha : null;
+    const desde = fechaDesde ? new Date(fechaDesde) : null;
+    const hasta = fechaHasta ? new Date(fechaHasta) : null;
+
+    const fechaCoincide = (!desde || (fechaVenta && fechaVenta >= desde)) &&
+                          (!hasta || (fechaVenta && fechaVenta <= hasta));
+
+    return nombreCoincide && fechaCoincide;
+  });
 
   const exportarExcel = () => {
     const datosExportar = ventasFiltradas.map(venta => ({
@@ -73,7 +76,7 @@ const Ventas = () => {
       Cantidad: venta.cantidad,
       Precio: venta.precio,
       Total: venta.total,
-      Fecha: venta.fecha?.toDate().toLocaleString()
+      Fecha: venta.fecha ? venta.fecha.toLocaleString() : ''
     }));
     const worksheet = XLSX.utils.json_to_sheet(datosExportar);
     const workbook = XLSX.utils.book_new();
@@ -83,19 +86,15 @@ const Ventas = () => {
     saveAs(blob, "ventas.xlsx");
   };
 
-  // Agrupar ventas por mes y calcular el total de ventas por mes
   const ventasPorMes = () => {
     const grouped = ventas.reduce((acc, venta) => {
-      const fechaVenta = venta.fecha?.toDate();
+      const fechaVenta = venta.fecha;
       const mes = fechaVenta ? `${fechaVenta.getMonth() + 1}/${fechaVenta.getFullYear()}` : 'Desconocido';
-      if (!acc[mes]) {
-        acc[mes] = 0;
-      }
-      acc[mes] += venta.total;
+      if (!acc[mes]) acc[mes] = 0;
+      acc[mes] += venta.total || 0;
       return acc;
     }, {});
 
-    // Convertir el objeto agrupado en un array para la gráfica
     return Object.keys(grouped).map(mes => ({
       mes,
       total: grouped[mes]
@@ -133,51 +132,51 @@ const Ventas = () => {
               <th>Acciones</th>
             </tr>
           </thead>
-         <tbody>
-  {ventasFiltradas.map((venta) => (
-    <React.Fragment key={venta.id}>
-      <tr>
-        <td>{venta.producto ?? ''}</td>
-        <td>{venta.cantidad ?? 0}</td>
-        <td>{venta.precio ?? 0}</td>
-        <td>{venta.total ?? 0}</td>
-        <td>{venta.fecha?.toDate().toLocaleString() ?? ''}</td>
-        <td>
-          <button onClick={() => iniciarEdicion(venta)}>✏️</button>
-          <button onClick={() => eliminarVenta(venta.id)}>🗑</button>
-        </td>
-      </tr>
-      {editandoId === venta.id && (
-        <tr>
-          <td colSpan="6">
-            <form onSubmit={(e) => { e.preventDefault(); guardarCambios(); }}>
-              <input
-                type="text"
-                value={editData.producto}
-                onChange={(e) => setEditData({ ...editData, producto: e.target.value })}
-                required
-              />
-              <input
-                type="number"
-                value={editData.cantidad}
-                onChange={(e) => setEditData({ ...editData, cantidad: e.target.value })}
-                required
-              />
-              <input
-                type="number"
-                value={editData.precio}
-                onChange={(e) => setEditData({ ...editData, precio: e.target.value })}
-                required
-              />
-              <button type="submit">Guardar</button>
-              <button type="button" onClick={() => setEditandoId(null)}>Cancelar</button>
-            </form>
-          </td>
-        </tr>
-      )}
-    </React.Fragment>
-  ))}
-</tbody>
+          <tbody>
+            {ventasFiltradas.map((venta) => (
+              <React.Fragment key={venta.id}>
+                <tr>
+                  <td>{venta.producto ?? ''}</td>
+                  <td>{venta.cantidad ?? 0}</td>
+                  <td>{venta.precio ?? 0}</td>
+                  <td>{venta.total ?? 0}</td>
+                  <td>{venta.fecha ? venta.fecha.toLocaleString() : ''}</td>
+                  <td>
+                    <button onClick={() => iniciarEdicion(venta)}>✏️</button>
+                    <button onClick={() => eliminarVenta(venta.id)}>🗑</button>
+                  </td>
+                </tr>
+                {editandoId === venta.id && (
+                  <tr>
+                    <td colSpan="6">
+                      <form onSubmit={(e) => { e.preventDefault(); guardarCambios(); }}>
+                        <input
+                          type="text"
+                          value={editData.producto}
+                          onChange={(e) => setEditData({ ...editData, producto: e.target.value })}
+                          required
+                        />
+                        <input
+                          type="number"
+                          value={editData.cantidad}
+                          onChange={(e) => setEditData({ ...editData, cantidad: e.target.value })}
+                          required
+                        />
+                        <input
+                          type="number"
+                          value={editData.precio}
+                          onChange={(e) => setEditData({ ...editData, precio: e.target.value })}
+                          required
+                        />
+                        <button type="submit">Guardar</button>
+                        <button type="button" onClick={() => setEditandoId(null)}>Cancelar</button>
+                      </form>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
         </table>
       )}
 
