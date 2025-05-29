@@ -41,8 +41,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
-          {/* Rutas protegidas */}
+          
           <Route element={<ProtectedRoute />}>
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/registrar-venta" element={<RegistrarVenta />} />
