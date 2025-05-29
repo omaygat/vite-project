@@ -1,8 +1,7 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthProvider, AuthContext } from "./AuthContext";
 
-import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Ventas from "./pages/Ventas";
@@ -20,11 +19,11 @@ function NavBar() {
           <Link to="/ventas" style={{ marginRight: "15px" }}>Ventas</Link>
           <Link to="/registrar-venta" style={{ marginRight: "15px" }}>Registrar Venta</Link>
           <Link to="/prediccion" style={{ marginRight: "15px" }}>Predicción de Ventas</Link>
+          <Link to="/Register" style={{ marginRight: "15px" }}>Registrarse </Link>
         </>
       ) : (
         <>
-          <Link to="/" style={{ marginRight: "15px" }}>Inicio</Link>
-          <Link to="/login" style={{ marginRight: "15px" }}>Iniciar Sesión</Link>
+          <Link to="/" style={{ marginRight: "15px" }}>Login</Link>
           <Link to="/register" style={{ marginRight: "15px" }}>Registrarse</Link>
         </>
       )}
@@ -38,10 +37,10 @@ function App() {
       <BrowserRouter>
         <NavBar />
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/Login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
+          {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/registrar-venta" element={<RegistrarVenta />} />
@@ -53,4 +52,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
