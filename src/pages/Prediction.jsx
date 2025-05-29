@@ -15,13 +15,18 @@ import {
 const Prediction = () => {
   const [prediccion, setPrediccion] = useState(null);
 
-  // Datos para la gráfica simulados (o los puedes adaptar)
+  const obtenerNombreMesSiguiente = (fechaStr) => {
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const fecha = new Date(fechaStr);
+    const mesSiguiente = (fecha.getMonth() + 1) % 12; // Si diciembre, vuelve a enero (0)
+    return meses[mesSiguiente];
+  };
+
   const dataGrafica = prediccion ? [
-    { mes: 'Enero', ventas: prediccion.prediccion_ventas * 0.8 },
-    { mes: 'Febrero', ventas: prediccion.prediccion_ventas * 0.9 },
-    { mes: 'Marzo', ventas: prediccion.prediccion_ventas },
-    { mes: 'Abril', ventas: prediccion.prediccion_ventas * 1.1 },
-    { mes: 'Mayo', ventas: prediccion.prediccion_ventas * 1.2 },
+    {
+      mes: obtenerNombreMesSiguiente(prediccion.fecha_prediccion),
+      ventas: prediccion.prediccion_ventas
+    }
   ] : [];
 
   useEffect(() => {
