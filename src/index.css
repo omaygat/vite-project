@@ -1,47 +1,56 @@
-/* Sidebar layout */
+/* Menú lateral fijo */
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
   width: 220px;
   height: 100%;
-  background-color: #111;
+  background-color: #1a1a1a;
   padding: 20px;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  box-shadow: 2px 0 8px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: center;
   z-index: 1000;
 }
 
+/* Título */
 .sidebar h2 {
-  color: cyan;
-  font-size: 1.5em;
+  color: #00ffff;
   margin-bottom: 20px;
+  text-align: center;
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
+/* Contenedor de enlaces */
+.nav-links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.sidebar li {
-  margin: 10px 0;
-}
-
-.sidebar a {
-  color: #00bfff;
-  text-decoration: none;
-  font-size: 1.1em;
+/* Botones tipo cuadro */
+.nav-button {
+  display: block;
+  width: 100%;
+  padding: 12px 10px;
+  background-color: #333;
+  color: #00ffff;
+  text-align: center;
+  border-radius: 8px;
   font-weight: bold;
-  transition: 0.3s;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
 }
 
-.sidebar a:hover {
-  color: white;
+.nav-button:hover {
+  background-color: #00ffff;
+  color: #000;
 }
 
-/* Move the content so it's not hidden under the sidebar */
+/* Espacio para el contenido principal (para que no lo tape el menú) */
 body {
-  margin-left: 220px;
+  margin-left: 240px; /* mismo ancho que .sidebar + padding */
+  background-color: #0f0f0f;
+  color: #fff;
 }
