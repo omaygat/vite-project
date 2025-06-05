@@ -7,6 +7,9 @@ const RegistrarVenta = () => {
   const [producto, setProducto] = useState('');
   const [cantidad, setCantidad] = useState('');
   const [precio, setPrecio] = useState('');
+  const [oferta, setOferta] = useState(false);
+  const [rebajaPromedio, setRebajaPromedio] = useState('');
+  const [indiceMercado, setIndiceMercado] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,12 +21,18 @@ const RegistrarVenta = () => {
         cantidad: Number(cantidad),
         precio: Number(precio),
         total,
-        fecha: Timestamp.now()
+        fecha: Timestamp.now(),
+        oferta: oferta ? 1 : 0,
+        rebaja_promedio: parseFloat(rebajaPromedio) || 0,
+        indice_mercado: parseFloat(indiceMercado) || 100 // Puedes ajustar el valor por defecto
       });
       alert("Venta registrada correctamente");
       setProducto('');
       setCantidad('');
       setPrecio('');
+      setOferta(false);
+      setRebajaPromedio('');
+      setIndiceMercado('');
     } catch (error) {
       console.error("Error al registrar venta: ", error);
     }
@@ -39,6 +48,7 @@ const RegistrarVenta = () => {
           <option value="Caja de porcelanato">Caja de porcelanato</option>
           <option value="Lavadero">Lavadero</option>
         </select>
+
         <input
           type="number"
           placeholder="Cantidad a comprar"
@@ -48,6 +58,7 @@ const RegistrarVenta = () => {
           step="1"
           required
         />
+
         <input
           type="number"
           placeholder="Precio"
@@ -57,7 +68,38 @@ const RegistrarVenta = () => {
           step="0.01"
           required
         />
+
+        {/* NUEVOS CAMPOS */}
+        <label>
+          <input
+            type="checkbox"
+            checked={oferta}
+            onChange={(e) => setOferta(e.target.checked)}
+          />
+          ¿Hubo oferta?
+        </label>
+
+        <input
+          type="number"
+          placeholder="Rebaja promedio (%)"
+          value={rebajaPromedio}
+          onChange={(e) => setRebajaPromedio(e.target.value)}
+          min="0"
+          max="100"
+          step="0.1"
+        />
+
+        <input
+          type="number"
+          placeholder="Índice del mercado"
+          value={indiceMercado}
+          onChange={(e) => setIndiceMercado(e.target.value)}
+          min="0"
+          step="0.1"
+        />
+
         <p>Total: S/ {(parseFloat(cantidad) || 0) * (parseFloat(precio) || 0)}</p>
+
         <button type="submit">Registrar Venta</button>
       </form>
     </div>
@@ -65,3 +107,4 @@ const RegistrarVenta = () => {
 };
 
 export default RegistrarVenta;
+
